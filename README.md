@@ -32,20 +32,6 @@ The NetCDF files are tracked with Git LFS because model output can exceed the no
 
 ## Input data
 
-By default, the script reads:
-
-- `data/topo.nc` — model grid/topography file
-- `data/3D_mean_2016-03.nc` — three-dimensional hydrodynamic model output
-
-The topography file must contain `lonc` and `latc`.
-
-The three-dimensional model file must contain `time`, `bathymetry`, `temp`, `salt`, and `hn`. The variable `hv` is optional and is used only when a positive `HV_MIN` threshold is configured.
-
-Alternative files can be supplied with `--topo` and `--data`, so the code does not depend on a particular server or directory layout.
-
-
-Data
-
 The NetCDF files used in this study are not distributed through this GitHub repository because of their size.
 
 The model data are archived on Zenodo:
