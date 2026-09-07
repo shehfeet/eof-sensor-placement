@@ -119,7 +119,6 @@ If you use this code, please cite the accompanying manuscript:
 
 Morandage, S., Rummel, K., and Prien, R. *Model-Informed EOF-Based Sensor Placement for Marine Monitoring*.
 
-Repository citation metadata are also provided in `CITATION.cff`.
 
 ## License
 
