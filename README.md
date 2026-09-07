@@ -43,6 +43,42 @@ The three-dimensional model file must contain `time`, `bathymetry`, `temp`, `sal
 
 Alternative files can be supplied with `--topo` and `--data`, so the code does not depend on a particular server or directory layout.
 
+
+Data
+
+The NetCDF files used in this study are not distributed through this GitHub repository because of their size.
+
+The model data are archived on Zenodo:
+
+Model Data for EOF-Based Optimal Sensor Placement and 3D Marine Reconstruction in the Weser Estuary
+Zenodo: https://doi.org/10.5281/zenodo.22637638
+
+Required files
+
+Download the dataset from Zenodo and place the required NetCDF files in this directory:
+
+data/
+├── topo.nc
+└── 3D_mean_2016-03.nc
+
+The default workflow expects:
+
+topo.nc — model grid and topography information
+
+3D_mean_2016-03.nc — three-dimensional hydrodynamic model output
+
+The topography file must contain lonc and latc. The three-dimensional model file must contain time, bathymetry, temp, salt, and hn. The variable hv is optional.
+
+If the files are stored elsewhere or use different filenames, specify them when running the script:
+
+python eof_sensor_placement.py dopt \
+  --topo /path/to/topo.nc \
+  --data /path/to/model_output.nc
+
+The NetCDF files are excluded from version control. Only this README is retained in the data/ directory.
+
+
+
 ## Installation
 
 The calculations reported in the manuscript were run with Python 3.9.18, NumPy 1.26.4, SciPy 1.13.1, and xarray 2024.7.0.
