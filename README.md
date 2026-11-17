@@ -1,147 +1,78 @@
 # EOF-based sensor placement for marine monitoring
 
-Python implementation used for EOF-based three-dimensional sensor placement and sparse reconstruction of temperature and salinity fields in the Weser Estuary case study.
+Python scripts for EOF-based sensor placement and reconstruction of temperature and salinity in the Weser Estuary.
 
-The workflow compares seven sensor-placement approaches:
-
-- QDEIM
-- D-optimal design
-- A-optimal design
-- uncertainty-based placement (U-opt)
-- greedy RMSE selection
-- hybrid D-optimal/RMSE selection
-- random placement
-
-The analysis includes candidate-site screening, EOF construction, sparse reconstruction, observation uncertainty, reconstruction metrics, computational timing, and CSV/Shapefile exports.
-
-## Repository contents
-
-```text
-.
-├── eof_sensor_placement.py
-├── data/
-│   ├── topo.nc
-│   └── 3D_mean_2016-03.nc
-├── requirements.txt
-├── CITATION.cff
-├── LICENSE
-└── README.md
-```
-
-The NetCDF files are tracked with Git LFS because model output can exceed the normal GitHub file-size limit.
+The revised analysis uses days 1–2 for training, day 3 for validation and day 4 for testing.
 
 ## Input data
 
-The NetCDF files used in this study are not distributed through this GitHub repository because of their size.
+Place the required NetCDF files in a `Data` folder beside the scripts:
 
-The model data are archived on Zenodo:
+```text
+Data/
+    topo.nc
+    3D_mean_2016-03.nc
+    3D_mean_2016-06.nc
+    3D_mean_2016-09.nc
+    3D_mean_2016-12.nc
+```
 
-Model Data for EOF-Based Optimal Sensor Placement and 3D Marine Reconstruction in the Weser Estuary
-Zenodo: https://doi.org/10.5281/zenodo.22637638
+The March file and topography are needed for the main analysis. The adaptive analysis also requires June, September and December.
 
-Required files
-
-Download the dataset from Zenodo and place the required NetCDF files in this directory:
-
-data/
-├── topo.nc
-└── 3D_mean_2016-03.nc
-
-The default workflow expects:
-
-topo.nc — model grid and topography information
-
-3D_mean_2016-03.nc — three-dimensional hydrodynamic model output
-
-The topography file must contain lonc and latc. The three-dimensional model file must contain time, bathymetry, temp, salt, and hn. The variable hv is optional.
-
-If the files are stored elsewhere or use different filenames, specify them when running the script:
-
-python eof_sensor_placement.py dopt \
-  --topo /path/to/topo.nc \
-  --data /path/to/model_output.nc
-
-The NetCDF files are excluded from version control. Only this README is retained in the data/ directory.
-
-
+The model-data record is available on [Zenodo](https://doi.org/10.5281/zenodo.22637638). Model files and generated results are not included in this repository.
 
 ## Installation
 
-The calculations reported in the manuscript were run with Python 3.9.18, NumPy 1.26.4, SciPy 1.13.1, and xarray 2024.7.0.
+Install the required packages:
 
-Create an environment and install the dependencies:
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-On Windows, activate the environment with:
-
-```text
-.venv\Scripts\activate
+```sh
+python -m pip install -r requirements.txt
 ```
 
 ## Running the analysis
 
-Run one placement method using the default March data:
+Keep all Python scripts in the same folder. Each part can be run separately.
 
-```bash
-python eof_sensor_placement.py dopt --candidates voxel
+D-opt reference-design selection and measurement-noise evaluation:
+
+```sh
+python run_dopt_design.py
 ```
 
-Run all placement methods:
+Comparison of the six optimized placement methods:
 
-```bash
-python eof_sensor_placement.py --all_methods --candidates voxel
+```sh
+python run_methods.py
 ```
 
-Use data stored elsewhere:
+Random baseline using 100 layouts:
 
-```bash
-python eof_sensor_placement.py dopt \
-  --topo /path/to/topo.nc \
-  --data /path/to/model_output.nc \
-  --start 2016-03-01 \
-  --end 2016-03-05 \
-  --output /path/to/results
+```sh
+python run_random.py
 ```
 
-The default output directory is `outputs/` in the repository root.
+D-opt parameter sensitivity:
 
-## Main settings
+```sh
+python run_sensitivity.py
+```
 
-The principal analysis settings are grouped near the top of `eof_sensor_placement.py`. They include the number of retained EOF modes, maximum number of sensors, voxel dimensions, observation uncertainties, ridge regularization, and temperature/salinity weighting.
+Seasonal comparison:
 
-For the manuscript analysis, the default candidate spacing is 500 m × 500 m × 1 m and the maximum sensor count is 21.
+```sh
+python run_adaptive.py
+```
 
-## Output
+After the Methods and Random runs finish, the additional noise-weighting check can be run:
 
-Results are written by placement method and candidate mode. Depending on the selected settings, outputs include:
+```sh
+python check_noise_weights.py
+```
 
-- selected sensor locations
-- reconstruction metrics by sensor count
-- computational timings
-- per-snapshot and per-location errors
-- uncertainty estimates
-- EOF and reconstruction diagnostics
-- CSV files for figures and further analysis
-- Shapefiles for spatial post-processing
+The shared analysis settings are specified in `settings.py`. Random runs independently using the same EOF count and ridge parameter as the optimized methods.
 
-Generated results are excluded from version control.
-
-## Data source
-
-The hydrodynamic fields used in the case study were generated with the General Estuarine Transport Model (GETM). Details of the Weser Estuary model configuration are given in the manuscript and the cited model publications.
+Results are saved in separate folders under `outputs/`. To resume an interrupted run, repeat the same command without changing the scripts or input files.
 
 ## Citation
 
-If you use this code, please cite the accompanying manuscript:
-
-Morandage, S., Rummel, K., and Prien, R. *Model-Informed EOF-Based Sensor Placement for Marine Monitoring*.
-
-
-## License
-
-This repository is released under the MIT License. Users should retain the copyright and license notices when redistributing the code.
+Morandage, S., Rummel, K., and Prien, R. *Model-Informed EOF-Based Sensor Placement for Marine Monitoring.*
