@@ -19,7 +19,7 @@ Data/
 
 The March file and topography are needed for the main analysis. The adaptive analysis also requires June, September and December.
 
-The model-data record is available on [Zenodo](https://doi.org/10.5281/zenodo.22637638). Model files and generated results are not included in this repository.
+The model-data record is available on [Zenodo](https://doi.org/10.5281/zenodo.24334506). Model files and generated results are not included in this repository.
 
 ## Installation
 
